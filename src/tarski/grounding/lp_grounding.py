@@ -72,8 +72,8 @@ class LPGroundingStrategy:
             silentremove(model_filename)
             silentremove(theory_filename)
 
-            if len(self.model[GOAL]) != 1:
-                raise ReachabilityLPUnsolvable()
+            # if len(self.model[GOAL]) != 1:
+            #     raise ReachabilityLPUnsolvable()
         return self.model
 
     def __str__(self):
