@@ -40,6 +40,12 @@ class Problem:
 
         self.actions[name] = Action(self.language, name, parameters, precondition, effects, cost)
         return self.actions[name]
+    
+    def remove_action(self, name):
+        if name not in self.actions:
+            raise err.UndefinedAction(name)
+        del self.actions[name]
+        return name
 
     def derived(self, name, parameters, formula):
         if name in self.derived_:

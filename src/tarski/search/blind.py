@@ -1,7 +1,14 @@
 import logging
+import typing
 from collections import deque
 
 from .model import GroundForwardSearchModel
+
+class DepthFirstSearch:
+    """Full expansion of a problem through Depth-First search. Also returns the plan(s)"""
+    def __init__(self, model: GroundForwardSearchModel, max_expansions=-1):
+        self.model = model
+        self.max_expansions = max_expansions
 
 
 class BreadthFirstSearch:
@@ -17,8 +24,26 @@ class BreadthFirstSearch:
 
     def search(self, root):
         # create obj to track state space
+
+        def reverse_engineer_plan(node:SearchNode) -> list:
+            """Reverse engineer the plan from the goal node back to the root node
+
+            Args:
+                node (SearchNode): the goal node with a parent node
+
+            Returns:
+                list: the plan from the root node to the goal node
+            """
+            plan = []
+            while node.parent is not None:
+                plan.append(node.action)
+                node = node.parent
+            plan.reverse()
+            return plan
+        
         space = SearchSpace()
         stats = SearchStats()
+        plans = []
 
         openlist = deque()  # fifo-queue storing the nodes which are next to explore
         openlist.append(make_root_node(root))
@@ -31,6 +56,8 @@ class BreadthFirstSearch:
             node = openlist.popleft()
             if self.model.is_goal(node.state):
                 stats.num_goals += 1
+                plan = reverse_engineer_plan(node)
+                plans.append(plan)
                 logging.info(f"Goal found after {stats.nexpansions} expansions. {stats.num_goals} goal states found.")
 
             if 0 <= self.max_expansions <= stats.nexpansions:
@@ -45,7 +72,7 @@ class BreadthFirstSearch:
 
         logging.info(f"Search space exhausted. # expanded: {stats.nexpansions}, # goals: {stats.num_goals}.")
         space.complete = True
-        return space, stats
+        return space, stats, plans
 
 
 class SearchNode:
