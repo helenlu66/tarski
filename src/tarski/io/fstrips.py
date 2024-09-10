@@ -40,7 +40,10 @@ class FstripsReader:
         if not strict_with_requirements:
             load_theory(lang, Theory.ARITHMETIC)
             create_number_type(lang)
-
+        self.domain_file = None
+        self.domain_text = None
+        self.problem_file = None
+        self.problem_text = None
         self.problem = create_fstrips_problem(language=lang, evaluator=evaluator)
         self.parser = FStripsParser(self.problem, raise_on_error, case_insensitive)
 
@@ -54,11 +57,25 @@ class FstripsReader:
         domain_parse_tree, _ = self.parser.parse_file(filename, start_rule)
         self.parser.visit(domain_parse_tree)
 
+    def read_file(self, file_path:str):
+        """read the file from the given file_path
+        """
+        try:
+            with open(file_path, 'r') as file:
+                file_content = file.read()
+                return file_content
+        except Exception as e:
+            return e
+    
     def parse_domain(self, filename):
+        self.domain_file = filename
+        self.domain_text = self.read_file(filename)
         self.parse_file(filename, 'domain')
         uniformize_costs(self.problem)
 
     def parse_instance(self, filename):
+        self.problem_file = filename
+        self.problem_text = self.read_file(filename)
         self.parse_file(filename, 'problem')
         return self.problem
 

@@ -36,7 +36,8 @@ class Problem:
 
     def action(self, name, parameters, precondition, effects, cost=None):
         if name in self.actions:
-            raise err.DuplicateActionDefinition(name, self.actions[name])
+            # ignore the action if it is already defined
+            return self.actions[name]
 
         self.actions[name] = Action(self.language, name, parameters, precondition, effects, cost)
         return self.actions[name]
