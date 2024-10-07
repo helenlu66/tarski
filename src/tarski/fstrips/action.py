@@ -22,6 +22,16 @@ class Action:
         paramlist = "{}".format(','.join("{}: {}".format(p.symbol, p.sort.name) for p in self.parameters))
         return f'{self.name}({paramlist})'
 
+    def ppdl_ident(self):
+        paramlist = "{}".format(' '.join(sorted("{} - {}".format(p.symbol, p.sort.name) for p in self.parameters)))
+        precond = ' & '.join(str(eff) for eff in self.precondition)
+        effect = ' & '.join(str(eff) for eff in self.effects)
+        return f"""(:action {self.name}
+            :parameters ({paramlist})
+            :precondition ({precond})
+            :effect ({effect}
+        )"""
+    
     def __str__(self):
         return self.ident()
     __repr__ = __str__
@@ -41,6 +51,9 @@ class GroundOperator:
 
     def ident(self):
         return self.name
+    
+    def __eq__(self, other):
+        return self.ident() == other.ident()
 
     def __str__(self):
         return self.ident()

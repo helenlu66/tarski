@@ -118,6 +118,9 @@ class CompoundFormula(Formula):
         inner = " {} ".format(self.connective).join(str(f) for f in self.subformulas)
         return "({})".format(inner)
 
+    def pddl_repr(self):
+        return f"{self.connective} {' '.join('('+f.pddl_repr()+')' for f in self.subformulas)}"
+
     __repr__ = __str__
 
     def __eq__(self, other):
@@ -329,6 +332,9 @@ class Atom(Formula):
 
     def __str__(self):
         return '{}({})'.format(self.predicate.symbol, ','.join(str(t) for t in self.subterms))
+    
+    def pddl_repr(self):
+        return '{} {}'.format(self.predicate.symbol, ' '.join(str(t) for t in self.subterms))
 
     __repr__ = __str__
 
@@ -356,6 +362,9 @@ class VariableBinding:
 
     def __getitem__(self, index):
         return self._v_values[index]
+    
+    def pddl_repr(self) -> str:
+        return ' '.join(sorted([f"{v.symbol} - {v.sort.name}" for v in self.variables.values()]))
 
     def add(self, variable: Variable):
         other = self.variables.get(variable.symbol, None)

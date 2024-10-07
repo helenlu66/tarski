@@ -24,6 +24,7 @@ class SingleEffect(BaseEffect):
 
     def tostring(self):
         raise NotImplementedError("To be subclassed")
+    
 
 
 class AddEffect(SingleEffect):
@@ -34,6 +35,9 @@ class AddEffect(SingleEffect):
 
     def tostring(self):
         return "ADD({})".format(self.atom)
+    
+    def pddl_repr(self):
+        return self.atom.pddl_repr()
 
 
 class DelEffect(SingleEffect):
@@ -44,6 +48,9 @@ class DelEffect(SingleEffect):
 
     def tostring(self):
         return "DEL({})".format(self.atom)
+    
+    def pddl_repr(self):
+        return f"not ({self.atom.pddl_repr()})"
 
 
 class LiteralEffect(SingleEffect):

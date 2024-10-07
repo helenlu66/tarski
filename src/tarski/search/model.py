@@ -32,6 +32,9 @@ class GroundForwardSearchModel:
     def init(self):
         return self.problem.init
 
+    def has_operator(self, op):
+        return op in self.operators
+
     def applicable(self, state):
         """ Return a generator with all ground operators that are applicable in the given state. """
         return (op for op in self.operators if is_applicable(state, op))
