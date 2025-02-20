@@ -57,6 +57,9 @@ class GroundOperator:
 
     def __str__(self):
         return self.ident()
+    
+    def __hash__(self):
+        return hash(self.ident())
     __repr__ = __str__
 
 
@@ -68,6 +71,9 @@ class PlainOperator(GroundOperator):
         self.precondition = flatten(precondition)
         self.effects = effects
         # self.validate(self)
+    
+    def __hash__(self):
+        return super().__hash__()
 
 
 class AdditiveActionCost:
